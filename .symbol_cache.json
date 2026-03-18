@@ -1,0 +1,503 @@
+{
+  "test.js": {
+    "hash": "adab299335900ebe477e52f3183e9264",
+    "symbols": [
+      {
+        "name": "runTest",
+        "kind": "function",
+        "line": 7
+      }
+    ],
+    "meteorMethods": [
+      "check",
+      "notExpect",
+      "checkMeteorMethods"
+    ],
+    "imports": [
+      "src/ts-engine/index.js"
+    ]
+  },
+  "index.js": {
+    "hash": "14da7bcdc886e44c64458ad61453bfd7",
+    "symbols": [
+      {
+        "name": "getAliasMap",
+        "kind": "function",
+        "line": 17
+      }
+    ],
+    "meteorMethods": [],
+    "imports": [
+      "src/index/content-index.js",
+      "src/ts-engine/index.js",
+      "src/utils/alias.js"
+    ]
+  },
+  "diagnose.js": {
+    "hash": "de2d05ca0f7b3c767c6b6a967b8417ba",
+    "symbols": [],
+    "meteorMethods": [],
+    "imports": []
+  },
+  "debug-monitor.js": {
+    "hash": "8ed08d60d9fb5aac93d051d3c49903a9",
+    "symbols": [
+      {
+        "name": "log",
+        "kind": "function",
+        "line": 14
+      },
+      {
+        "name": "estimateTokens",
+        "kind": "function",
+        "line": 15
+      },
+      {
+        "name": "recordCall",
+        "kind": "function",
+        "line": 17
+      },
+      {
+        "name": "printSessionSummary",
+        "kind": "function",
+        "line": 18
+      },
+      {
+        "name": "instrument",
+        "kind": "function",
+        "line": 19
+      },
+      {
+        "name": "getAliasMap",
+        "kind": "function",
+        "line": 23
+      },
+      {
+        "name": "groupByDir",
+        "kind": "function",
+        "line": 26
+      }
+    ],
+    "meteorMethods": [],
+    "imports": [
+      "src/index/content-index.js",
+      "src/ts-engine/index.js",
+      "src/utils/alias.js"
+    ]
+  },
+  "hooks/observation-masking.js": {
+    "hash": "0ffee086f1ac8b697574e9ca3b9d57c8",
+    "symbols": [
+      {
+        "name": "main",
+        "kind": "function",
+        "line": 3
+      },
+      {
+        "name": "applyObservationMasking",
+        "kind": "function",
+        "line": 4
+      },
+      {
+        "name": "segmentIntoTurns",
+        "kind": "function",
+        "line": 5
+      },
+      {
+        "name": "hasToolUse",
+        "kind": "function",
+        "line": 6
+      },
+      {
+        "name": "maskToolOutputs",
+        "kind": "function",
+        "line": 7
+      },
+      {
+        "name": "maskSingleOutput",
+        "kind": "function",
+        "line": 8
+      },
+      {
+        "name": "buildPlaceholder",
+        "kind": "function",
+        "line": 9
+      },
+      {
+        "name": "safeStringify",
+        "kind": "function",
+        "line": 10
+      },
+      {
+        "name": "computeMaskingStats",
+        "kind": "function",
+        "line": 11
+      },
+      {
+        "name": "logToStderr",
+        "kind": "function",
+        "line": 12
+      }
+    ],
+    "meteorMethods": [],
+    "imports": []
+  },
+  "hooks/ace-playbook.js": {
+    "hash": "868114843dd584c97a5075bf5d5d39db",
+    "symbols": [
+      {
+        "name": "main",
+        "kind": "function",
+        "line": 9
+      },
+      {
+        "name": "extractLessons",
+        "kind": "function",
+        "line": 10
+      },
+      {
+        "name": "curateLessons",
+        "kind": "function",
+        "line": 11
+      },
+      {
+        "name": "tfidf",
+        "kind": "function",
+        "line": 12
+      },
+      {
+        "name": "cosineSimilarity",
+        "kind": "function",
+        "line": 13
+      },
+      {
+        "name": "findPlaybookPath",
+        "kind": "function",
+        "line": 14
+      },
+      {
+        "name": "loadPlaybook",
+        "kind": "function",
+        "line": 15
+      },
+      {
+        "name": "parseExistingLessons",
+        "kind": "function",
+        "line": 16
+      },
+      {
+        "name": "buildPlaybookContent",
+        "kind": "function",
+        "line": 17
+      },
+      {
+        "name": "buildInitialPlaybook",
+        "kind": "function",
+        "line": 18
+      },
+      {
+        "name": "log",
+        "kind": "function",
+        "line": 19
+      }
+    ],
+    "meteorMethods": [
+      "for",
+      "type",
+      "text"
+    ],
+    "imports": []
+  },
+  "src/utils/alias.js": {
+    "hash": "d89e9dfe1cb7676361ad7f4c59883dc9",
+    "symbols": [
+      {
+        "name": "buildAliasMap",
+        "kind": "function",
+        "line": 5
+      }
+    ],
+    "meteorMethods": [],
+    "imports": []
+  },
+  "src/ts-engine/skeletonizer.js": {
+    "hash": "c2debb79412e8c5a177adc7268ed5458",
+    "symbols": [
+      {
+        "name": "ntext",
+        "kind": "variable",
+        "line": 1
+      },
+      {
+        "name": "childOf",
+        "kind": "variable",
+        "line": 2
+      },
+      {
+        "name": "childrenOf",
+        "kind": "variable",
+        "line": 3
+      },
+      {
+        "name": "hasKind",
+        "kind": "variable",
+        "line": 4
+      },
+      {
+        "name": "lineOf",
+        "kind": "variable",
+        "line": 5
+      },
+      {
+        "name": "collapsedSig",
+        "kind": "function",
+        "line": 6
+      },
+      {
+        "name": "extractImports",
+        "kind": "function",
+        "line": 7
+      },
+      {
+        "name": "extractTypes",
+        "kind": "function",
+        "line": 8
+      },
+      {
+        "name": "extractExports",
+        "kind": "function",
+        "line": 9
+      },
+      {
+        "name": "renderDecl",
+        "kind": "function",
+        "line": 10
+      },
+      {
+        "name": "renderFnSig",
+        "kind": "function",
+        "line": 11
+      },
+      {
+        "name": "renderClassSig",
+        "kind": "function",
+        "line": 12
+      },
+      {
+        "name": "renderMemberSig",
+        "kind": "function",
+        "line": 13
+      },
+      {
+        "name": "renderVarDecl",
+        "kind": "function",
+        "line": 14
+      },
+      {
+        "name": "extractRegistrations",
+        "kind": "function",
+        "line": 15
+      },
+      {
+        "name": "walkConfigObject",
+        "kind": "function",
+        "line": 16
+      },
+      {
+        "name": "extractModuleLevel",
+        "kind": "function",
+        "line": 17
+      },
+      {
+        "name": "assembleSkeleton",
+        "kind": "function",
+        "line": 18
+      },
+      {
+        "name": "section",
+        "kind": "function",
+        "line": 21
+      }
+    ],
+    "meteorMethods": [],
+    "imports": []
+  },
+  "src/ts-engine/queries.js": {
+    "hash": "cd082b5a3545fe170912ccfaacba7f3d",
+    "symbols": [
+      {
+        "name": "findDeclarationNode",
+        "kind": "function",
+        "line": 1
+      },
+      {
+        "name": "findTopLevelDecl",
+        "kind": "function",
+        "line": 5
+      },
+      {
+        "name": "matchDecl",
+        "kind": "function",
+        "line": 6
+      },
+      {
+        "name": "findShapeARegistration",
+        "kind": "function",
+        "line": 7
+      },
+      {
+        "name": "findShapeBRegistration",
+        "kind": "function",
+        "line": 8
+      },
+      {
+        "name": "textOf",
+        "kind": "function",
+        "line": 9
+      }
+    ],
+    "meteorMethods": [
+      "sendMessage"
+    ],
+    "imports": []
+  },
+  "src/ts-engine/parser-pool.js": {
+    "hash": "7bad65fc07d8c9a0ab1e20bf7920a43d",
+    "symbols": [
+      {
+        "name": "LANG",
+        "kind": "variable",
+        "line": 5
+      },
+      {
+        "name": "parserPool",
+        "kind": "variable",
+        "line": 6
+      },
+      {
+        "name": "ParserPool",
+        "kind": "class",
+        "line": 11
+      }
+    ],
+    "meteorMethods": [],
+    "imports": []
+  },
+  "src/ts-engine/index.js": {
+    "hash": "2569adc204864303d7b250d9a7afedef",
+    "symbols": [
+      {
+        "name": "skeletonizeFile",
+        "kind": "function",
+        "line": 9
+      },
+      {
+        "name": "extractSymbol",
+        "kind": "function",
+        "line": 10
+      },
+      {
+        "name": "extractMeteorMethodsFromFile",
+        "kind": "function",
+        "line": 11
+      },
+      {
+        "name": "scanMeteorMethods",
+        "kind": "function",
+        "line": 14
+      },
+      {
+        "name": "loadFile",
+        "kind": "function",
+        "line": 16
+      },
+      {
+        "name": "regexExtractSymbol",
+        "kind": "function",
+        "line": 17
+      }
+    ],
+    "meteorMethods": [
+      "name"
+    ],
+    "imports": [
+      "src/ts-engine/parser-pool.js",
+      "src/ts-engine/queries.js",
+      "src/ts-engine/skeletonizer.js",
+      "src/ts-engine/fallback.js"
+    ]
+  },
+  "src/ts-engine/fallback.js": {
+    "hash": "c644b7472eebfcf7e3fa8aecc2a96878",
+    "symbols": [
+      {
+        "name": "tokenStreamFallback",
+        "kind": "function",
+        "line": 1
+      },
+      {
+        "name": "findBlockEnd",
+        "kind": "function",
+        "line": 4
+      },
+      {
+        "name": "blockSig",
+        "kind": "function",
+        "line": 5
+      },
+      {
+        "name": "extractDescription",
+        "kind": "function",
+        "line": 6
+      },
+      {
+        "name": "extractParams",
+        "kind": "function",
+        "line": 7
+      },
+      {
+        "name": "section",
+        "kind": "function",
+        "line": 8
+      },
+      {
+        "name": "buildOutput",
+        "kind": "function",
+        "line": 9
+      }
+    ],
+    "meteorMethods": [],
+    "imports": []
+  },
+  "src/index/content-index.js": {
+    "hash": "10d23420ee36506754b94d7df0412e0e",
+    "symbols": [
+      {
+        "name": "ContentIndex",
+        "kind": "class",
+        "line": 8
+      },
+      {
+        "name": "md5",
+        "kind": "function",
+        "line": 28
+      },
+      {
+        "name": "loadCache",
+        "kind": "function",
+        "line": 29
+      },
+      {
+        "name": "saveCache",
+        "kind": "function",
+        "line": 30
+      }
+    ],
+    "meteorMethods": [
+      "methodName"
+    ],
+    "imports": [
+      "src/ts-engine/index.js"
+    ]
+  }
+}

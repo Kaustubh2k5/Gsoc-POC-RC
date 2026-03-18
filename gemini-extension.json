@@ -1,0 +1,25 @@
+{
+  "name": "rocketchat-code-analyzer",
+  "version": "2.0.0",
+  "mcpServers": {
+    "codeAnalyzer": {
+      "command": "node",
+      "args": ["${extensionPath}${/}debug-monitor.js"],
+      "cwd": "${extensionPath}",
+      "env": {
+        "REPO_ROOT": "${workspacePath}"
+      }
+    }
+  },
+  "contextFileName": "GEMINI.md",
+  "hooks": {
+    "beforeModel": {
+      "command": "node",
+      "args": ["${extensionPath}${/}hooks${/}observation-masking.js"]
+    },
+    "afterAgent": {
+      "command": "node",
+      "args": ["${extensionPath}${/}hooks${/}ace-playbook.js"]
+    }
+  }
+}
