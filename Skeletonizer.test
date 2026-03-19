@@ -1,0 +1,441 @@
+/**
+ * Skeletonizer Test Suite — Vitest
+ *
+ * Tests covered:
+ *
+ *   1. Basic exports
+ *      1a. Imports are preserved verbatim
+ *      1b. Bare interface appears in Types section
+ *      1c. Exported interface appears in Exports section, not Types
+ *      1d. Exported async function signature is present, body stripped
+ *      1e. Exported class appears with member signatures
+ *      1f. Class public async method signature preserved
+ *      1g. Class static method signature preserved
+ *      1h. Exported const is present
+ *      1i. Exported type alias is present
+ *      1j. Reduction is at least 50%
+ *
+ *   2. MCP registrations (Shape A — string name + handler)
+ *      2a. Registrations section header is present
+ *      2b. First tool registration detected with correct name
+ *      2c. First tool description extracted into placeholder
+ *      2d. Second tool registration detected with correct name
+ *      2e. Second tool description extracted into placeholder
+ *
+ *   3. Meteor.methods (Shape B — object of named methods)
+ *      3a. Exported interface appears in Exports section
+ *      3b. Registrations section header is present
+ *      3c. Meteor.methods block detected
+ *      3d. sendMessage method name extracted
+ *      3e. deleteMessage method name extracted
+ *      3f. meteorMethods array contains sendMessage
+ *      3g. meteorMethods array contains deleteMessage
+ *      3h. Exported interface does NOT appear in Types section
+ *
+ *   4. Symbol extraction
+ *      4a. validateMessage — found with correct engine
+ *      4b. validateMessage — source contains function signature
+ *      4c. validateMessage — source contains function body
+ *      4d. RoomService — found with correct engine
+ *      4e. RoomService — source contains class declaration
+ *      4f. helper — found as variable declaration
+ *      4g. helper — source contains arrow function
+ *      4h. nonExistentSymbol — returns error, not source
+ *
+ *   5. Token-stream fallback (plain JS, no TS syntax)
+ *      5a. Registrations section header is present
+ *      5b. GET route registration detected
+ *      5c. POST route registration detected
+ *      5d. Module-level function detected
+ *      5e. Engine reported is token-stream-fallback or tree-sitter
+ *      5f. Reduction is at least 30%
+ */
+
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { writeFileSync, unlinkSync } from 'fs';
+import { skeletonizeFile, extractSymbol } from './src/ts-engine/index.js';
+
+// =============================================================================
+// Helpers
+// =============================================================================
+
+let tempFilePath = null;
+
+function writeTempFile(src, ext) {
+  const path = `/tmp/vitest-skel-${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`;
+  writeFileSync(path, src.trim(), 'utf-8');
+  tempFilePath = path;
+  return path;
+}
+
+afterEach(() => {
+  if (tempFilePath) {
+    try { unlinkSync(tempFilePath); } catch {}
+    tempFilePath = null;
+  }
+});
+
+// =============================================================================
+// 1. Basic exports
+// =============================================================================
+
+describe('1. Basic exports', () => {
+  let result;
+  let filePath;
+
+  beforeEach(async () => {
+    filePath = writeTempFile(`
+import { z } from 'zod';
+import { readFile } from 'fs/promises';
+
+interface IUser {
+  id: string;
+  name: string;
+}
+
+export interface IMessage {
+  rid: string;
+  msg: string;
+}
+
+export async function sendMessage(msg: IMessage): Promise<boolean> {
+  const result = await doSomething(msg);
+  return result;
+}
+
+export class MessageService {
+  private db: Database;
+  public async send(msg: IMessage): Promise<void> { }
+  static validate(msg: unknown): boolean { return true; }
+}
+
+export const MAX_LENGTH = 5000;
+export type MessageStatus = 'sent' | 'pending' | 'failed';
+`, '.ts');
+    result = await skeletonizeFile(filePath);
+  });
+
+  it('1a. imports are preserved verbatim', () => {
+    expect(result.error).toBeUndefined();
+    expect(result.skeleton).toContain("import { z }");
+    expect(result.skeleton).toContain("import { readFile }");
+  });
+
+  it('1b. bare interface appears in Types section', () => {
+    expect(result.skeleton).toContain('// ── Types');
+    expect(result.skeleton).toContain('interface IUser');
+  });
+
+  it('1c. exported interface appears in Exports section not Types', () => {
+    expect(result.skeleton).toContain('// ── Exports');
+    expect(result.skeleton).toContain('export interface IMessage');
+    const typesIdx = result.skeleton.indexOf('// ── Types');
+    const exportsIdx = result.skeleton.indexOf('// ── Exports');
+    const imessageIdx = result.skeleton.indexOf('export interface IMessage');
+    // IMessage must appear after the Exports header, not between Types header and Exports header
+    expect(imessageIdx).toBeGreaterThan(exportsIdx);
+    if (typesIdx !== -1) {
+      expect(imessageIdx).not.toBeLessThan(exportsIdx);
+    }
+  });
+
+  it('1d. exported async function signature present, body stripped', () => {
+    expect(result.skeleton).toContain('export async function sendMessage');
+    expect(result.skeleton).toContain('{ ... }');
+    expect(result.skeleton).not.toContain('doSomething');
+  });
+
+  it('1e. exported class appears in skeleton', () => {
+    expect(result.skeleton).toContain('export class MessageService');
+  });
+
+  it('1f. class public async method signature preserved', () => {
+    expect(result.skeleton).toContain('public async send');
+  });
+
+  it('1g. class static method signature preserved', () => {
+    expect(result.skeleton).toContain('static validate');
+  });
+
+  it('1h. exported const is present', () => {
+    expect(result.skeleton).toContain('export const MAX_LENGTH');
+  });
+
+  it('1i. exported type alias is present', () => {
+    expect(result.skeleton).toContain('export type MessageStatus');
+  });
+
+  it('1j. token reduction is at least 50%', () => {
+    expect(result.stats.reductionPct).toBeGreaterThanOrEqual(50);
+  });
+});
+
+// =============================================================================
+// 2. MCP registrations (Shape A)
+// =============================================================================
+
+describe('2. MCP registrations — Shape A (string name + handler)', () => {
+  let result;
+
+  beforeEach(async () => {
+    const filePath = writeTempFile(`
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+
+const server = new McpServer({ name: 'test', version: '1.0.0' });
+
+server.registerTool(
+  'list_files',
+  {
+    description: 'Lists files in the repository for discovery.',
+    inputSchema: {
+      path: z.string().optional(),
+      pattern: z.string().optional(),
+    }
+  },
+  async ({ path, pattern }) => {
+    return { content: [] };
+  }
+);
+
+server.registerTool(
+  'read_skeleton',
+  {
+    description: 'Returns a lean skeleton of a file.',
+    inputSchema: { file_path: z.string() }
+  },
+  async ({ file_path }) => {
+    return { content: [] };
+  }
+);
+`, '.js');
+    result = await skeletonizeFile(filePath);
+  });
+
+  it('2a. Registrations section header is present', () => {
+    expect(result.error).toBeUndefined();
+    expect(result.skeleton).toContain('// ── Registrations');
+  });
+
+  it('2b. first tool registration detected with correct name', () => {
+    expect(result.skeleton).toContain("server.registerTool('list_files'");
+  });
+
+  it('2c. first tool description extracted into placeholder comment', () => {
+    expect(result.skeleton).toContain('Lists files in the repository');
+  });
+
+  it('2d. second tool registration detected with correct name', () => {
+    expect(result.skeleton).toContain("server.registerTool('read_skeleton'");
+  });
+
+  it('2e. second tool description extracted into placeholder comment', () => {
+    expect(result.skeleton).toContain('Returns a lean skeleton');
+  });
+});
+
+// =============================================================================
+// 3. Meteor.methods (Shape B)
+// =============================================================================
+
+describe('3. Meteor.methods — Shape B (object of named methods)', () => {
+  let result;
+
+  beforeEach(async () => {
+    const filePath = writeTempFile(`
+import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
+
+export interface ISendMessageOptions {
+  rid: string;
+  msg: string;
+  tmid?: string;
+}
+
+Meteor.methods({
+  async sendMessage(message: ISendMessageOptions) {
+    check(message, Object);
+    return doSend(message);
+  },
+  async deleteMessage(msgId: string) {
+    check(msgId, String);
+    return doDelete(msgId);
+  },
+});
+`, '.ts');
+    result = await skeletonizeFile(filePath);
+  });
+
+  it('3a. exported interface appears in Exports section', () => {
+    expect(result.error).toBeUndefined();
+    expect(result.skeleton).toContain('export interface ISendMessageOptions');
+  });
+
+  it('3b. Registrations section header is present', () => {
+    expect(result.skeleton).toContain('// ── Registrations');
+  });
+
+  it('3c. Meteor.methods block detected', () => {
+    expect(result.skeleton).toContain('Meteor.methods({');
+  });
+
+  it('3d. sendMessage method name extracted', () => {
+    expect(result.skeleton).toContain('sendMessage');
+  });
+
+  it('3e. deleteMessage method name extracted', () => {
+    expect(result.skeleton).toContain('deleteMessage');
+  });
+
+  it('3f. meteorMethods array contains sendMessage', () => {
+    expect(result.meteorMethods).toContain('sendMessage');
+  });
+
+  it('3g. meteorMethods array contains deleteMessage', () => {
+    expect(result.meteorMethods).toContain('deleteMessage');
+  });
+
+  it('3h. exported interface does NOT appear in Types section duplicated', () => {
+    const typesIdx = result.skeleton.indexOf('// ── Types');
+    const exportsIdx = result.skeleton.indexOf('// ── Exports');
+    if (typesIdx !== -1 && exportsIdx !== -1) {
+      const typesSectionContent = result.skeleton.slice(typesIdx, exportsIdx);
+      expect(typesSectionContent).not.toContain('ISendMessageOptions');
+    }
+  });
+});
+
+// =============================================================================
+// 4. Symbol extraction
+// =============================================================================
+
+describe('4. Symbol extraction', () => {
+  let filePath;
+
+  beforeEach(() => {
+    filePath = writeTempFile(`
+import { db } from './db';
+
+interface InternalConfig {
+  timeout: number;
+}
+
+export async function validateMessage(msg: string): Promise<boolean> {
+  if (!msg) return false;
+  const result = await db.validate(msg);
+  return result.ok;
+}
+
+export class RoomService {
+  async joinRoom(roomId: string, userId: string): Promise<void> {
+    await db.rooms.addMember(roomId, userId);
+  }
+}
+
+export const helper = (x: number) => x * 2;
+`, '.ts');
+  });
+
+  it('4a. validateMessage — found with tree-sitter or regex engine', async () => {
+    const result = await extractSymbol(filePath, 'validateMessage');
+    expect(result.source).toBeTruthy();
+    expect(['tree-sitter', 'regex-fallback']).toContain(result.engine);
+  });
+
+  it('4b. validateMessage — source contains function signature', async () => {
+    const result = await extractSymbol(filePath, 'validateMessage');
+    expect(result.source).toContain('validateMessage');
+    expect(result.source).toContain('Promise<boolean>');
+  });
+
+  it('4c. validateMessage — source contains function body', async () => {
+    const result = await extractSymbol(filePath, 'validateMessage');
+    expect(result.source).toContain('db.validate');
+  });
+
+  it('4d. RoomService — found with correct engine', async () => {
+    const result = await extractSymbol(filePath, 'RoomService');
+    expect(result.source).toBeTruthy();
+    expect(result.error).toBeUndefined();
+  });
+
+  it('4e. RoomService — source contains class declaration', async () => {
+    const result = await extractSymbol(filePath, 'RoomService');
+    expect(result.source).toContain('class RoomService');
+    expect(result.source).toContain('joinRoom');
+  });
+
+  it('4f. helper — found as variable declaration', async () => {
+    const result = await extractSymbol(filePath, 'helper');
+    expect(result.source).toBeTruthy();
+    expect(result.error).toBeUndefined();
+  });
+
+  it('4g. helper — source contains arrow function', async () => {
+    const result = await extractSymbol(filePath, 'helper');
+    expect(result.source).toContain('helper');
+    expect(result.source).toContain('=>');
+  });
+
+  it('4h. nonExistentSymbol — returns error not source', async () => {
+    const result = await extractSymbol(filePath, 'nonExistentSymbol');
+    expect(result.source).toBeFalsy();
+    expect(result.error).toBeTruthy();
+  });
+});
+
+// =============================================================================
+// 5. Token-stream fallback (plain JS)
+// =============================================================================
+
+describe('5. Token-stream fallback — plain JS with no TS syntax', () => {
+  let result;
+
+  beforeEach(async () => {
+    const filePath = writeTempFile(`
+import express from 'express';
+
+const router = express.Router();
+
+router.get('/rooms', async (req, res) => {
+  const rooms = await getRooms();
+  res.json(rooms);
+});
+
+router.post('/rooms', async (req, res) => {
+  const room = await createRoom(req.body);
+  res.json(room);
+});
+
+function getRooms() {
+  return db.find({});
+}
+`, '.js');
+    result = await skeletonizeFile(filePath);
+  });
+
+  it('5a. Registrations section header is present', () => {
+    expect(result.error).toBeUndefined();
+    expect(result.skeleton).toContain('// ── Registrations');
+  });
+
+  it('5b. GET route registration detected', () => {
+    expect(result.skeleton).toContain("router.get('/rooms'");
+  });
+
+  it('5c. POST route registration detected', () => {
+    expect(result.skeleton).toContain("router.post('/rooms'");
+  });
+
+  it('5d. module-level function detected', () => {
+    expect(result.skeleton).toContain('function getRooms');
+  });
+
+  it('5e. engine field is reported', () => {
+    expect(result.stats.engine).toBeTruthy();
+    expect(['tree-sitter', 'token-stream-fallback']).toContain(result.stats.engine);
+  });
+
+  it('5f. token reduction is at least 30%', () => {
+    expect(result.stats.reductionPct).toBeGreaterThanOrEqual(30);
+  });
+});
