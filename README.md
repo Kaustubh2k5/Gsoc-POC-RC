@@ -1,6 +1,6 @@
 # Rocket.Chat Code Analyzer — gemini-cli Extension
 
-> ⚠️ **Work In Progress** : This is a proof-of-concept implementation developed as part of a GSoC 2026 proposal. Several components are under active redesign. See the [Known Issues](#known-issues) and [Incomplete / Placeholder Implementations](#incomplete--placeholder-implementations) sections before use.
+>  **Work In Progress** : This is a proof-of-concept implementation developed as part of a GSoC 2026 proposal. Several components are under active redesign. See the [Known Issues](#known-issues) and [Incomplete / Placeholder Implementations](#incomplete--placeholder-implementations) sections before use.
 
 A `gemini-cli` extension that makes the Rocket.Chat monorepo (~2.1 GiB) genuinely navigable within the constraints of Google's free-tier inference budget. Built around domain-specific context reduction mechanisms that exploit the structural properties of code to achieve reductions that are qualitatively different from general-purpose compression.
 
@@ -219,7 +219,7 @@ npm run test:e2e      # full session lifecycle (requires Rocket.Chat clone)
 
 Unit test coverage targets: skeletonizer, graph store, parser pool, observation masking hook, playbook curator. Integration tests run against a curated fixture set of ~30 Rocket.Chat files from the messaging subsystem committed to the repo.
 
-> ⚠️ The test suite is not yet complete. Unit tests for the skeletonizer and graph store exist in partial form. Integration and end-to-end tests are planned for weeks 6–7 of the GSoC timeline.
+> The test suite is not yet complete. Unit tests for the skeletonizer and graph store exist in partial form. Integration and end-to-end tests are planned for weeks 6–7 of the GSoC timeline.
 
 ---
 
