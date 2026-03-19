@@ -186,23 +186,23 @@ The following benchmarks define the performance goals for the complete system. B
 
 ```
 .
-├── gemini-extension.json      # Extension config — MCP server, hooks, context file
+├── gemini-extension.json      # Extension config for MCP server, hooks, context file
 ├── debug-monitor.js           # MCP server with full instrumentation (primary entry point)
 ├── index.js                   # MCP server minimal (production entry point)
 ├── hooks/
-│   ├── observation-masking.js # BeforeModel hook — rolling window masking
-│   ├── ace-playbook.js        # AfterAgent hook — Reflector → Curator → Generator
+│   ├── observation-masking.js # BeforeModel hook rolling window observation masking
+│   ├── ace-playbook.js        # AfterAgent hook for aceplaybook, Reflector/Curator/Generator
 │   └── session-report.js      # Session token usage reporter
 └── src/
     ├── ts-engine/
-    │   ├── index.js           # Public API — skeletonizeFile, extractSymbol, extractCallSites
-    │   ├── skeletonizer.js    # AST → skeleton string (five signal categories)
-    │   ├── queries.js         # Declaration finder — depth-limited AST walk
+    │   ├── index.js           # Public API for the ts engine skeletonizeFile, extractSymbol, extractCallSites
+    │   ├── skeletonizer.js    # AST skeleton string (five signal categories)
+    │   ├── queries.js         # Declaration finder depth-limited AST walk (for completeness and memory efficient search)
     │   ├── parser-pool.js     # Parser reuse + tree cache singleton
-    │   └── fallback.js        # Token-stream fallback skeletonizer
+    │   └── fallback.js        # Token stream fallback skeletonizer
     └── index/
         ├── graph-store.js     # Lazy function dependency graph (primary)
-        └── content-index.js   # File-level index with MD5 cache (legacy, to be retired)
+        └── content-index.js   # File level index with MD5 cache (legacy, to be retired)
 ```
 
 ---
