@@ -22,7 +22,7 @@ This extension tackles both problems separately using domain-specific strategies
 
 ## Architecture
 
-![Architecture](/mcp.svg)
+![Architecture]()
 
 
 ---
@@ -89,7 +89,7 @@ The extension reads `gemini-extension.json` at its root, which wires the MCP ser
 
 ## Data Flow
 
-![DataFlow](/flow.svg)
+![DataFlow]()
 
 
 ---
