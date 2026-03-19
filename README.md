@@ -1,6 +1,6 @@
 # Rocket.Chat Code Analyzer — gemini-cli Extension
 
-> ⚠️ **Work In Progress** : This is a proof-of-concept implementation developed as part of a GSoC 2026 proposal. Several components are incomplete, placeholder, or under active redesign. See the [Known Issues](#known-issues) and [Incomplete / Placeholder Implementations](#incomplete--placeholder-implementations) sections before use.
+> ⚠️ **Work In Progress** : This is a proof-of-concept implementation developed as part of a GSoC 2026 proposal. Several components are under active redesign. See the [Known Issues](#known-issues) and [Incomplete / Placeholder Implementations](#incomplete--placeholder-implementations) sections before use.
 
 A `gemini-cli` extension that makes the Rocket.Chat monorepo (~2.1 GiB) genuinely navigable within the constraints of Google's free-tier inference budget. Built around domain-specific context reduction mechanisms that exploit the structural properties of code to achieve reductions that are qualitatively different from general-purpose compression.
 
