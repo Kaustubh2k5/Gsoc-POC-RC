@@ -225,5 +225,5 @@ Unit test coverage targets: skeletonizer, graph store, parser pool, observation 
 
 ## Acknowledgements
 
-Built as a GSoC 2026 project for Rocket.Chat. Mentor: William Liu.
-Built on prior work on [CodeSaathi AI](https://github.com/Kaustubh2k5) and the broader Agentic Context Engineering research direction.
+Built as a GSoC 2026 project proposal for Rocket.Chat. Mentor: William Liu.
+Built on prior work on [CodeSaathi AI](https://github.com/Kaustubh2k5) and fur future research references
