@@ -89,30 +89,8 @@ The extension reads `gemini-extension.json` at its root, which wires the MCP ser
 
 ## Data Flow
 
-```
-Disk (raw source)
-    ↓ readFile
-Parser pool
-    ↓ tree-sitter parse → cache tree
-    ├──→ Skeletonizer → skeleton string → context (via get_scope)
-    └──→ Graph store → function nodes + call edges
-                ↓
-         blast_radius (BFS over calledBy links)
+![DataFlow](/images/flow.svg)
 
-On re-access (same file, same session):
-    Parser pool cache hit → near-zero cost re-extraction
-
-Message history (N turns):
-    ↓ BeforeModel hook
-    Old tool outputs → [...omitted, recoverable via tool call]
-    Reasoning messages → untouched
-    ↓
-    Gemini API (trimmed history)
-
-Session end:
-    AfterAgent hook → Reflector → Curator → GEMINI.md
-    GEMINI.md → loaded at start of next session
-```
 
 ---
 
