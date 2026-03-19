@@ -1,8 +1,8 @@
 # Rocket.Chat Code Analyzer — gemini-cli Extension
 
-> ⚠️ **Work In Progress** — This is a proof-of-concept implementation developed as part of a GSoC 2026 proposal. Several components are incomplete, placeholder, or under active redesign. See the [Known Issues](#known-issues) and [Incomplete / Placeholder Implementations](#incomplete--placeholder-implementations) sections before use.
+> ⚠️ **Work In Progress** : This is a proof-of-concept implementation developed as part of a GSoC 2026 proposal. Several components are incomplete, placeholder, or under active redesign. See the [Known Issues](#known-issues) and [Incomplete / Placeholder Implementations](#incomplete--placeholder-implementations) sections before use.
 
-A `gemini-cli` extension that makes the Rocket.Chat monorepo (~2.1 GiB, ~6,000 files) genuinely navigable within the constraints of Google's free-tier inference budget. Built around domain-specific context reduction mechanisms that exploit the structural properties of code to achieve reductions that are qualitatively different from general-purpose compression.
+A `gemini-cli` extension that makes the Rocket.Chat monorepo (~2.1 GiB) genuinely navigable within the constraints of Google's free-tier inference budget. Built around domain-specific context reduction mechanisms that exploit the structural properties of code to achieve reductions that are qualitatively different from general-purpose compression.
 
 **Source:** https://github.com/Kaustubh2k5/Gsoc-POC-RC
 
@@ -12,7 +12,7 @@ A `gemini-cli` extension that makes the Rocket.Chat monorepo (~2.1 GiB, ~6,000 f
 
 Pointing a CLI agent at a production monorepo reveals two compounding problems:
 
-**Ingestion bloat** : even compressed file representations accumulate faster than the context window can absorb them at scale. Existing solutions such as KV caching and llm-lingua compression are O(n) — they slow the bleeding without stopping it.
+**Ingestion bloat** : even compressed file representations accumulate faster than the context window can absorb them at scale. Existing solutions such as KV caching and llm-lingua compression are O(n), they slow the problem without stopping it.
 
 **Trajectory elongation** : as a session progresses, the agent's own history fills with stale tool outputs. Up to 84% of tokens in a typical agent session are consumed by raw observations the agent has already acted on and no longer needs in full.
 
@@ -22,7 +22,7 @@ This extension tackles both problems separately using domain-specific strategies
 
 ## Architecture
 
-![Architecture](/images/mcp.svg)
+![Architecture](/mcp.svg)
 
 
 ---
@@ -31,12 +31,12 @@ This extension tackles both problems separately using domain-specific strategies
 
 ### Session lifecycle
 
-1. **Session start** — `GEMINI.md` is checked. If it exists, prior learned lessons are injected into context immediately. If not, the agent starts cold.
-2. **Discovery** — the agent calls `list_files` → `search_symbol` → `get_scope` in sequence, narrowing from the full repo to the relevant dependency neighbourhood.
-3. **Parse and graph build** — `get_scope` triggers `ensureFile` per relevant file. Each file is read from disk, parsed by tree-sitter, its tree cached in the parser pool, a skeleton extracted, and nodes/edges added to the graph store.
-4. **Agent reasons** — skeletons are in context. The agent calls `read_symbol_details` to hydrate specific function bodies at near-zero cost (tree is already cached), and `blast_radius` to understand impact.
-5. **Masking** — as turns accumulate, the `BeforeModel` hook fires before every API call, replacing old tool outputs with compact placeholders. Reasoning and action messages are never touched.
-6. **Session end** — the `AfterAgent` hook runs the Reflector → Curator → Generator pipeline, extracting architectural lessons from the transcript and appending them to `GEMINI.md`.
+1. **Session start** : `GEMINI.md` is checked. If it exists, prior learned lessons are injected into context immediately. If not, the agent starts cold.
+2. **Discovery** : the agent calls `list_files` → `search_symbol` → `get_scope` in sequence, narrowing from the full repo to the relevant dependency neighbourhood.
+3. **Parse and graph build** : `get_scope` triggers `ensureFile` per relevant file. Each file is read from disk, parsed by tree-sitter, its tree cached in the parser pool, a skeleton extracted, and nodes/edges added to the graph store.
+4. **Agent reasons** : skeletons are in context. The agent calls `read_symbol_details` to hydrate specific function bodies at near-zero cost (tree is already cached), and `blast_radius` to understand impact.
+5. **Masking** : as turns accumulate, the `BeforeModel` hook fires before every API call, replacing old tool outputs with compact placeholders. Reasoning and action messages are never touched.
+6. **Session end** : the `AfterAgent` hook runs the Reflector , Curator , Generator pipeline, extracting architectural lessons from the transcript and appending them to `GEMINI.md`.
 
 ### Why it works
 
@@ -89,7 +89,7 @@ The extension reads `gemini-extension.json` at its root, which wires the MCP ser
 
 ## Data Flow
 
-![DataFlow](/images/flow.svg)
+![DataFlow](/flow.svg)
 
 
 ---
